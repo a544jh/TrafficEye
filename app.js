@@ -7,7 +7,7 @@ let sites = [
 
 let site_data = {};
 
-currentSite = 7;
+let currentSite = 7;
 let currentField = 'Co2'
 
 function loadData(siteId) {
@@ -44,6 +44,7 @@ function addMarkers(site) {
         marker.on('click', () => {
             currentSite = site.id;
             loadData(currentSite);
+            mymap.panTo([site.lat, site.lon]);
         })
         marker.addTo(mymap);
     })
@@ -67,6 +68,15 @@ function initChart(data, field) {
     let values = counts.map(([k, v], i) => {
         return v;
     });
+
+    let min = Math.min(...values);
+    let max = Math.max(...values);
+    let colorScale = chroma.scale(['green', 'red']).mode('lrgb');
+    let colors = values.map((v, i) => {
+        let color = (field == 'Co2' ? colorScale(i / values.length) : colorScale((v - min) / (max - min)));
+        return color.hex();
+    });
+
     let ctx = document.getElementById("myChart");
     if (chart != null) {
         chart.destroy();
@@ -76,7 +86,8 @@ function initChart(data, field) {
         data: {
             labels: labels,
             datasets: [{
-                data: values
+                data: values,
+                backgroundColor: colors
             }]
         },
         options: {
@@ -88,7 +99,15 @@ function initChart(data, field) {
             scales: {
                 xAxes: [{
                     ticks: {
-                        autoSkip: false
+                        fontColor: 'black',
+                        fontSize: 16,
+                        autoSkip: (field == 'Co2')
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontColor: 'black',
+                        fontSize: 16
                     }
                 }]
             }
@@ -96,9 +115,13 @@ function initChart(data, field) {
     })
 }
 
-let dropdown = document.getElementById("dropdown");
+let buttons = document.getElementById('buttons');
+buttons.addEventListener('click', (e) => {
+    
+    let oldElem = buttons.querySelector(`[value="${currentField}"]`);
+    oldElem.classList.remove('active')
 
-dropdown.addEventListener('change', e => {
     currentField = e.target.value;
+    e.target.classList.add('active');
     initChart(site_data[currentSite], currentField);
 })
