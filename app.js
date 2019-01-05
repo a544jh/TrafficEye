@@ -105,6 +105,12 @@ function initChart(data, field) {
                     }
                 }],
                 yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Count',
+                        fontColor: 'black',
+                        fontSize: 16
+                    },
                     ticks: {
                         fontColor: 'black',
                         fontSize: 16
