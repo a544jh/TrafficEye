@@ -25,7 +25,7 @@ function loadData(siteId) {
 }
 
 
-var mymap = L.map('map').setView([53.782096, -1.559061], 13);
+var mymap = L.map('map').setView([53.8487877061642, -1.59535026110204], 11);
 loadData(currentSite);
 
 addMarkers(sites);
@@ -44,12 +44,9 @@ function addMarkers(site) {
         marker.on('click', () => {
             currentSite = site.id;
             loadData(currentSite);
-            mymap.panTo([site.lat, site.lon]);
         })
         marker.addTo(mymap);
     })
-
-    // mymap.panTo([points[0][0], points[0][1]]);
 }
 
 let chart = null;
